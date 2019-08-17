@@ -8,13 +8,13 @@ $data = json_decode(file_get_contents('php://input'), true);
 $mensaje=$data["messages"]["0"]["body"];
 $id = $data["messages"]["0"]["chatId"];
 $flag_loop = $data["messages"]["0"]["fromMe"];
+error_log(print_r($data,true), 0);
 
 //$numero=explode("@",$id);
 
 
 $pos =  1;
-$pos2 = 1;
-$pos3 = 1;
+$pos_eli = 1;
 $comando=0;
 
 
@@ -28,46 +28,67 @@ $pos =0;
 $search ='ELI';
 if(preg_match("/{$search}/i", $mensaje)) {
  
- $pos2 =0;
+ $pos =0;
 	
 };
 	
 $search ='eli';
 if(preg_match("/{$search}/i", $mensaje)) {
    
- $pos3 =0;
+ $pos_eli =0;
  
 };
 
 
 $search ='clima';
 if(preg_match("/{$search}/i", $mensaje)) {
-    
-$comando =2;
+
+$pos =0;
+$comando =1;
 };
 
 $search ='Clima';
 if(preg_match("/{$search}/i", $mensaje)) {
-    
-$comando =2;
+
+$pos =0;    
+$comando =1;
 };
 
 
 $search ='CLIMA';
 if(preg_match("/{$search}/i", $mensaje)) {
  
+$pos =0;
+$comando =1;
+	
+};
+
+$search ='video';
+if(preg_match("/{$search}/i", $mensaje)) {
+    
+$pos =0;
+$comando =2;
+};
+
+$search ='Video';
+if(preg_match("/{$search}/i", $mensaje)) {
+    
+$pos =0;
+$comando =2;
+};
+
+
+$search ='VIDEO';
+if(preg_match("/{$search}/i", $mensaje)) {
+ 
+$pos =0;
 $comando =2;
 	
 };
 
 
 
-
-//echo $mensaje;
-//echo "pos".$pos."</BR>";
-//echo "pos2".$pos2."</BR>";
-//echo "pos3".$pos3."</BR>";
-if (($pos == 0) or ($pos2 == 0) or ($pos3 == 0))
+if (($pos == 0) and ($pos_eli == 0))
     
 {
 
@@ -90,32 +111,22 @@ $resultDecode =json_decode($result);
 $data=json_decode($result,true);
 
 $respuesta = $resultDecode->{'output'}->{'text'}[0];
-
+error_log("------------------".$respuesta . "------------------------",0);
 
 
 $confidence =$data['intents'][0]['confidence'];
 
 $conversation_id = $data['extities']['output']['context']['conversation_id'];
-//echo "<br>conversation_id:" ."  " . $conversation_id;
 $dialog_turn_counter = $data['extities']['output']['context']['system']['dialog_turn_counter'];
-//echo "<br>dialog_turn_counter:" ."  " . $dialog_turn_counter;
-
 $confidence2 =(float)$confidence ;
-echo "confidence:" ."  " . $confidence2;
-echo "---repuesta  ".$respuesta;
-
-
-
-if ($confidence2 > $confidence_general)
-{
 
 
 
 if ($flag_loop == 0) 
 	
 	{	
-        $url = 'https://eu57.chat-api.com/instance54979/message?token=w2pbubkfb1ga58ot';	
-		$ch = curl_init($url);
+         $url = 'https://eu59.chat-api.com/instance59676/message?token=gvu6hzk4f5vv0cos';
+    	$ch = curl_init($url);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>$respuesta);
@@ -125,28 +136,10 @@ if ($flag_loop == 0)
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 		$result = curl_exec($ch);
-		echo "Mensaje enviado";
-	
-    }
-}
-else
+			
+	  	
 		
-	{
-	    $url = 'https://eu57.chat-api.com/instance54979/message?token=w2pbubkfb1ga58ot';
-    	$ch = curl_init($url);
-		$jsonData = array(
-			'chatId'=>$id,
-			'body' =>"Mi respuesta no tiene el nivel de confianza , pero aprenderé para entregartela");
-     
-		$jsonDataEncoded = json_encode($jsonData);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
-		$result = curl_exec($ch);
-		echo "Mensaje enviado 2";
-	};
-	
- if ($comando==2)
+	if ($comando==1)
     {
 		
 	$url = 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CHIRECU62';
@@ -168,9 +161,8 @@ else
 	echo $temperatura;
 	$data_clima="En Melipilla Temperatura: ".$temperatura."° Velocidad del viento: ".$velocidad_del_viento. "KM/H";
 	
-	
-	
-        $url = 'https://eu57.chat-api.com/instance54979/message?token=w2pbubkfb1ga58ot';
+		
+        $url = 'https://eu59.chat-api.com/instance59676/message?token=gvu6hzk4f5vv0cos';
     	$ch = curl_init($url);
 		$jsonData = array(
 			'chatId'=>$id,
@@ -181,14 +173,31 @@ else
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 		$result = curl_exec($ch);
-		echo "Mensaje enviado 3";	
+			
 	  	
 		
     }
 	
-
+	if ($comando==2)
+    {
+		
+        $url = 'https://eu59.chat-api.com/instance59676/sendFile?token=gvu6hzk4f5vv0cos';
+    	$ch = curl_init($url);
+		$jsonData = array(
+			'chatId'=>$id,
+			'filename'=>"video.mp4",
+			'body' =>"http://kognitive.cl/video.mp4");
+     
+		$jsonDataEncoded = json_encode($jsonData);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+		$result = curl_exec($ch);
+			
+	    
+    }
 }
-
-
+}
+	
 
 ?>
