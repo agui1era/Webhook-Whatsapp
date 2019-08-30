@@ -8,7 +8,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $mensaje=$data["messages"]["0"]["body"];
 $id = $data["messages"]["0"]["chatId"];
 $flag_loop = $data["messages"]["0"]["fromMe"];
-error_log(print_r($data,true), 0);
+//error_log(print_r($data,true), 0);
 
 //$numero=explode("@",$id);
 
@@ -111,21 +111,24 @@ $resultDecode =json_decode($result);
 $data=json_decode($result,true);
 
 $respuesta = $resultDecode->{'output'}->{'text'}[0];
-error_log("------------------".$respuesta . "------------------------",0);
+//error_log("------------------".$respuesta . "------------------------",0);
 
 
 $confidence =$data['intents'][0]['confidence'];
 
-$conversation_id = $data['extities']['output']['context']['conversation_id'];
-$dialog_turn_counter = $data['extities']['output']['context']['system']['dialog_turn_counter'];
+$conversation_id = $data['output']['context']['conversation_id'];
+$dialog_turn_counter = $data['output']['context']['system']['dialog_turn_counter'];
 $confidence2 =(float)$confidence ;
+error_log($confidence2);
 
-
+if  ($confidence2 > $confidence_general)
+    
+	{
 
 if ($flag_loop == 0) 
 	
 	{	
-         $url = 'https://eu59.chat-api.com/instance59676/message?token=gvu6hzk4f5vv0cos';
+         $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
     	$ch = curl_init($url);
 		$jsonData = array(
 			'chatId'=>$id,
@@ -159,10 +162,10 @@ if ($flag_loop == 0)
 	echo "temp_c : ";
 	$temperatura= $jsonobject['CurrentDataClimatic']['temp_c'];
 	echo $temperatura;
-	$data_clima="En Melipilla Temperatura: ".$temperatura."° Velocidad del viento: ".$velocidad_del_viento. "KM/H";
+	$data_clima="En la ciudad de Melipilla la temperatura es: ".$temperatura." la velocidad del viento es: " .$velocidad_del_viento. " KM/H" ;
 	
 		
-        $url = 'https://eu59.chat-api.com/instance59676/message?token=gvu6hzk4f5vv0cos';
+        $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
     	$ch = curl_init($url);
 		$jsonData = array(
 			'chatId'=>$id,
@@ -181,7 +184,7 @@ if ($flag_loop == 0)
 	if ($comando==2)
     {
 		
-        $url = 'https://eu59.chat-api.com/instance59676/sendFile?token=gvu6hzk4f5vv0cos';
+        $url = 'https://eu36.chat-api.com/instance62012/sendFile?token=ucm5oy8oa6fne7ko';
     	$ch = curl_init($url);
 		$jsonData = array(
 			'chatId'=>$id,
@@ -196,8 +199,25 @@ if ($flag_loop == 0)
 			
 	    
     }
-}
-}
+ 
+   }
+  }
+  else
+  {
+	  $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
+    	$ch = curl_init($url);
+		$jsonData = array(
+			'chatId'=>$id,
+			'body' =>'Tengo una respuesa , pero no la seguridad de que sea correcta ,un humano la revisará para reentranarme.');
+     
+		$jsonDataEncoded = json_encode($jsonData);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+		$result = curl_exec($ch);
+  }
+	  
+ }
 	
 
 ?>
