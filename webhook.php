@@ -9,12 +9,21 @@ $mensaje=$data["messages"]["0"]["body"];
 $id = $data["messages"]["0"]["chatId"];
 $flag_loop = $data["messages"]["0"]["fromMe"];
 //error_log(print_r($data,true), 0);
-
 //$numero=explode("@",$id);
 
+$endpoint='https://eu36.chat-api.com/instance62012/';
+$metodo='message';
+$token='ucm5oy8oa6fne7ko';
 
-$pos =  1;
-$pos_eli = 1;
+$url_watson = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/befc8044-0d38-47a9-92b5-852db81a06ca/message?version=2019-02-28';
+$username_watson = 'apikey';
+$password_watson = 'l5bNJzAZlEWpFENUYaaXLiBo6DqVDiM3EBsQQoeeqINi';
+
+$url_clima= 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CHIRECU62';
+
+
+$pos=1;
+$pos_eli=1;
 $comando=0;
 
 
@@ -94,15 +103,13 @@ if (($pos == 0) and ($pos_eli == 0))
 
 //get Watson answer
 
-$url = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/befc8044-0d38-47a9-92b5-852db81a06ca/message?version=2019-02-28';
-$username = 'apikey';
-$password = 'l5bNJzAZlEWpFENUYaaXLiBo6DqVDiM3EBsQQoeeqINi';
-$ch = curl_init($url);
+
+$ch = curl_init($url_watson);
 $jsonData = array(
     'input' => array('text' => $mensaje));
 $jsonDataEncoded = json_encode($jsonData);
 curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);  
+curl_setopt($ch, CURLOPT_USERPWD, $username_watson . ":" . $password_watson);  
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
@@ -128,8 +135,9 @@ if  ($confidence2 > $confidence_general)
 if ($flag_loop == 0) 
 	
 	{	
-         $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
-    	$ch = curl_init($url);
+	    $metodo='message';
+        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>$respuesta);
@@ -145,12 +153,12 @@ if ($flag_loop == 0)
 	if ($comando==1)
     {
 		
-	$url = 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CHIRECU62';
+	
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: x-www-form-urlencoded'));
 	//$result = curl_exec($ch);
 
-	$result = file_get_contents($url);
+	$result = file_get_contents($url_clima);
 	// Will dump a beauty json :3
 	$jsonobject = json_decode($result, true);
 
@@ -164,9 +172,9 @@ if ($flag_loop == 0)
 	echo $temperatura;
 	$data_clima="En la ciudad de Melipilla la temperatura es: ".$temperatura." la velocidad del viento es: " .$velocidad_del_viento. " KM/H" ;
 	
-		
-        $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
-    	$ch = curl_init($url);
+	
+        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>$data_clima);
@@ -184,8 +192,9 @@ if ($flag_loop == 0)
 	if ($comando==2)
     {
 		
-        $url = 'https://eu36.chat-api.com/instance62012/sendFile?token=ucm5oy8oa6fne7ko';
-    	$ch = curl_init($url);
+        $metodo='sendFile';
+        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint);
 		$jsonData = array(
 			'chatId'=>$id,
 			'filename'=>"video.mp4",
@@ -204,8 +213,8 @@ if ($flag_loop == 0)
   }
   else
   {
-	  $url = 'https://eu36.chat-api.com/instance62012/message?token=ucm5oy8oa6fne7ko';
-    	$ch = curl_init($url);
+        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>'Tengo una respuesa , pero no la seguridad de que sea correcta ,un humano la revisará para reentranarme.');
