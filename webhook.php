@@ -15,9 +15,9 @@ $endpoint='https://eu36.chat-api.com/instance62012/';
 $metodo='message';
 $token='ucm5oy8oa6fne7ko';
 
-$url_watson = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/befc8044-0d38-47a9-92b5-852db81a06ca/message?version=2019-02-28';
+$url_watson = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/6ff1fd42-44e2-4477-99d1-235069abd73e/message?version=2019-02-28';
 $username_watson = 'apikey';
-$password_watson = 'l5bNJzAZlEWpFENUYaaXLiBo6DqVDiM3EBsQQoeeqINi';
+$password_watson = 'hgMHz8zA2Fzm6ZjFPzlDhQ6JIjM62Bgz-UVI7qrtcHur';
 
 $url_clima= 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CHIRECU62';
 
@@ -25,6 +25,34 @@ $url_clima= 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CH
 $pos=1;
 $pos_eli=1;
 $comando=0;
+
+
+$ch = curl_init($url_watson);
+$jsonData = array(
+    'input' => array('text' => $mensaje));
+$jsonDataEncoded = json_encode($jsonData);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_USERPWD, $username_watson . ":" . $password_watson);  
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+$result = curl_exec($ch);
+$resultDecode =json_decode($result);
+$data=json_decode($result,true);
+
+$respuesta = $resultDecode->{'output'}->{'text'}[0];
+//error_log("------------------".$respuesta . "------------------------",0);
+
+
+$confidence =$data['intents'][0]['confidence'];
+
+$conversation_id = $data['output']['context']['conversation_id'];
+$dialog_turn_counter = $data['output']['context']['system']['dialog_turn_counter'];
+$confidence2 =(float)$confidence ;
+
+
+
+
 
 
 $search ='Eli';
@@ -104,28 +132,7 @@ if (($pos == 0) and ($pos_eli == 0))
 //get Watson answer
 
 
-$ch = curl_init($url_watson);
-$jsonData = array(
-    'input' => array('text' => $mensaje));
-$jsonDataEncoded = json_encode($jsonData);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_USERPWD, $username_watson . ":" . $password_watson);  
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
-$result = curl_exec($ch);
-$resultDecode =json_decode($result);
-$data=json_decode($result,true);
 
-$respuesta = $resultDecode->{'output'}->{'text'}[0];
-//error_log("------------------".$respuesta . "------------------------",0);
-
-
-$confidence =$data['intents'][0]['confidence'];
-
-$conversation_id = $data['output']['context']['conversation_id'];
-$dialog_turn_counter = $data['output']['context']['system']['dialog_turn_counter'];
-$confidence2 =(float)$confidence ;
 error_log($confidence2);
 
 if  ($confidence2 > $confidence_general)
