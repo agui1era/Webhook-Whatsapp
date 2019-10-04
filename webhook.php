@@ -11,13 +11,13 @@ $flag_loop = $data["messages"]["0"]["fromMe"];
 //error_log(print_r($data,true), 0);
 //$numero=explode("@",$id);
 
-$endpoint='https://eu36.chat-api.com/instance62012/';
+$endpoint='https://eu59.chat-api.com/instance70682/';
 $metodo='message';
-$token='ucm5oy8oa6fne7ko';
+$token='0jv4e8ndnxgzwso1';
 
-$url_watson = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/6ff1fd42-44e2-4477-99d1-235069abd73e/message?version=2019-02-28';
+$url_watson = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/8ae11929-40de-4a36-ae4f-33e3812a19a1/message?version=2019-02-28';
 $username_watson = 'apikey';
-$password_watson = 'hgMHz8zA2Fzm6ZjFPzlDhQ6JIjM62Bgz-UVI7qrtcHur';
+$password_watson = 'tzSt2iiHPLuea7DKebZVlROrOKWxZtSkVWzyzPntlM7x';
 
 $url_clima= 'http://api.meteoagro.co/v1?apikey=LXASZZNJFM3MQ0N6KWCK&idstation=CHIRECU62';
 
@@ -143,8 +143,8 @@ if ($flag_loop == 0)
 	
 	{	
 	    $metodo='message';
-        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
-    	$ch = curl_init($endpoint);
+        $endpoint_final = $endpoint.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint_final);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>$respuesta);
@@ -180,8 +180,8 @@ if ($flag_loop == 0)
 	$data_clima="En la ciudad de Melipilla la temperatura es: ".$temperatura." la velocidad del viento es: " .$velocidad_del_viento. " KM/H" ;
 	
 	
-        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
-    	$ch = curl_init($endpoint);
+        $endpoint_final = $endpoint.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint_final);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>$data_clima);
@@ -200,8 +200,8 @@ if ($flag_loop == 0)
     {
 		
         $metodo='sendFile';
-        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
-    	$ch = curl_init($endpoint);
+        $endpoint_final = $endpoint.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint_final);
 		$jsonData = array(
 			'chatId'=>$id,
 			'filename'=>"video.mp4",
@@ -220,8 +220,8 @@ if ($flag_loop == 0)
   }
   else
   {
-        $endpoint = 'https://eu36.chat-api.com/instance62012/'.$metodo.'?token='.$token;
-    	$ch = curl_init($endpoint);
+        $endpoint_final = $endpoint.$metodo.'?token='.$token;
+    	$ch = curl_init($endpoint_final);
 		$jsonData = array(
 			'chatId'=>$id,
 			'body' =>'Tengo una respuesa , pero no la seguridad de que sea correcta ,un humano la revisará para reentranarme.');
